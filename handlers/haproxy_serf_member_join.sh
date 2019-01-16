@@ -9,7 +9,7 @@ while read line; do
     fi
     echo $line | \
         awk '{ printf "    server %s %s:7946 check\n", $1, $2 }' >> haproxy/haproxy.cfg.tmp
-    pkill -HUP haproxy
+    #pkill -HUP haproxy
 done
 
 exit 0
