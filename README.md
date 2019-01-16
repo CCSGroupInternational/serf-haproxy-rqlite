@@ -1,14 +1,21 @@
 # serf-rqlite
-[rqlite] database cluster integrated with [Serf] for service discovery
+[rqlite] database cluster integrated with [Serf] and [HAProxy] for service discovery
 ---
 
 [rqlite]: scripts/download.sh
 [Serf]: https://www.serf.io/
+[HAProxy]: http://www.haproxy.org/
 
+## Requirements
+- Linux system with
+    - HAProxy 1.8+
+    - The `socat` utility
 
-# Download the binaries
-If you are using this repository for the first time, run the download.sh script do download both rqlite and Serf:
+## Install
 
+Run the download script to make sure you get the rqlite and serf versions that have been used for the integration.
+
+Using a terminal
 ```sh
 scripts/download.sh
 ```
