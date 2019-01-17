@@ -1,7 +1,4 @@
 #!/bin/sh
-pgrep -a haproxy
 
-pgrep -a rqlite
-
-pgrep -a serf
-
+pgrep -a rqlite; pgrep -a serf; pgrep -a haproxy
+bin/serf members

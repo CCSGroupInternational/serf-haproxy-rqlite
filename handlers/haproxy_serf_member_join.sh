@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# The dynamic haproxy backend logic is based on:
+#   https://www.haproxy.com/blog/dynamic-scaling-for-microservices-with-runtime-api/
+
+
 echo
 echo "New event: ${SERF_EVENT}. Data follows..."
 
@@ -7,13 +12,13 @@ while read line; do
     if [ "${ROLE}" != "rqlite" ]; then
         continue
     fi
-    SERVER_NAME=$1
+    SERVER_NAME=$(echo $line| awk '{ print $1}')
     SERVER_ADDRESS=$2
-
-    echo "disable server rqlite-backend/rqlitesrv1" | socat stdio /tmp/haproxy.sock 
-    echo $line | \
-        awk '{ printf "    server %s %s:7946 check\n", $1, $2 }' >> haproxy/haproxy.cfg.tmp
-    #pkill -HUP haproxy
+    TAGS=$(echo $line| awk '{ print $4}')
+    # Obtain the service_ip from tags
+    SERVICE_IP=$(echo $TAGS|egrep -o "service_ip=[^,]+"|cut -d= -f2)
+    echo "set server rqlite-backend/$SERVER_NAME addr $SERVICE_IP" | socat stdio /tmp/haproxy.sock 
+    echo "set server rqlite-backend/$SERVER_NAME state ready" | socat stdio /tmp/haproxy.sock 
 done
 
 exit 0

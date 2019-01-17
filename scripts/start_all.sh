@@ -1,22 +1,27 @@
 #!/bin/sh
 
+set -eu
+
 mkdir -p logs
 
-# Start HAProxy
-cp -p haproxy/haproxy.cfg haproxy/haproxy.cfg.tmp
-haproxy -D -f haproxy/haproxy.cfg.tmp
-pgrep -a haproxy
+SERF_MEMBER_NET=127.0.10
+SERF_RPC_NET=127.0.0
+HAPROXY_NET=127.0.20
+RQLITE_NET=127.0.30
 
-# Start HAProxy Serf agent
-MEMBER_CHECK=1 nohup scripts/start_serf.sh haproxy >/dev/null 2>&1
+source scripts/start_service_and_serf.sh
 
-# Start rqlite
-nohup scripts/start_rqlite.sh  >/dev/null 2>&1
-pgrep -a rqlite
+# Update the HAProxy template for the rqlite backend
+sed "s/RQLITE_BACKEND/$RQLITE_NET.1:4001/g" haproxy/haproxy.cfg > haproxy/haproxy.cfg.tmp
 
-# Start rqlite Serf agent
-nohup scripts/start_serf.sh rqlite 9847 7374 >/dev/null 2>&1
+start_service_and_serf HAPROXY 1 receive-member-events
+start_service_and_serf RQLITE 1
+start_service_and_serf RQLITE 2
 
-# Check Serf Nodes
-pgrep -a serf
+sleep 1
+
+bin/serf members
+#pgrep -a rqlite; pgrep -a serf; pgrep -a haproxy
+
+exit
 
