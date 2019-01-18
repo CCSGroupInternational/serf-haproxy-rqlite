@@ -18,7 +18,7 @@ function start_service_and_serf {
     #SERVICE_COUNT=$(echo $(eval echo "\${$varname:-0}")).$SERF_NODE
     #SERVICE_COUNT=$(("))
 
-    echo "----- Starting $SERVICE_NAME Node $SERF_NODE -----"
+    echo "----- Starting $SERVICE_NAME Node $SERVICE_NODE -----"
     echo -e SERF_MEMBER_IP:'\t'$SERF_MEMBER_IP
     echo -e SERF_RPC_IP:'\t'$SERF_RPC_IP
     echo -e ${SERVICE_NAME}_IP:'\t'$SERVICE_IP

@@ -8,8 +8,7 @@
 
 ## Requirements
 - Linux system with
-    - HAProxy 1.8+, comiled with Lua support
-    - luajson (JSON support for Lua)
+    - HAProxy 1.8+
     - The `socat` utility
 
 ## Install
